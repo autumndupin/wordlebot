@@ -39,7 +39,7 @@ describe('WordleBot', () => {
         });
     });
 
-    test('limits guesses to 6 and shows not solved message', async () => {
+    test('limits guesses to 5 and shows not solved message on 5th incorrect guess', async () => {
         mockFetchWordleResult.mockResolvedValue({ guess: 'serai' });
 
         await act(async () => {
@@ -50,18 +50,31 @@ describe('WordleBot', () => {
             );
         });
 
-        // 5 guesses
-        for (let i = 0; i < 5; i++) {
-            fireEvent.click(screen.getAllByTestId('letter')[0]);
+        // simulate 4 incorrect guesses
+        for (let i = 0; i < 4; i++) {
+            const boxes = screen.getAllByTestId('clue-box');
+            // user marks all letters as incorrect
+            boxes.forEach(box => {
+                fireEvent.click(box); // yellow
+                fireEvent.click(box); // green
+                fireEvent.click(box); // back to white (x)
+            });
             fireEvent.click(screen.getByTestId('submit-button'));
             await waitFor(() => screen.findByTestId('guess-number'));
         }
 
-        // simulate the 6th guess
-        fireEvent.click(screen.getAllByTestId('letter')[0]);
+        // simulate a 5th guess also incorrect
+        const boxes = screen.getAllByTestId('clue-box');
+        // mark this guess as incorrect
+        boxes.forEach(box => {
+            fireEvent.click(box); // yellow
+            fireEvent.click(box); // green
+            fireEvent.click(box); // back to white (x)
+        });
         fireEvent.click(screen.getByTestId('submit-button'));
 
-        await waitFor(() => screen.findByTestId('error-message'));
+        // errors out
+        await waitFor(() => screen.findByTestId('error-message'), { timeout: 5000 });
         expect(screen.getByTestId('error-message')).toHaveTextContent('Wordle not solved. Please refresh WordleBot to try again.');
     });
 
@@ -151,5 +164,36 @@ describe('WordleBot', () => {
 
         await waitFor(() => screen.findByTestId('success-message'));
         expect(screen.getByTestId('success-message')).toHaveTextContent('Yay! All done');
+    });
+
+    test('submit button is disabled during loading', async () => {
+        mockFetchWordleResult.mockResolvedValue({ guess: 'serai' });
+    
+        await act(async () => {
+            render(
+                <ThemeProvider theme={theme}>
+                    <WordleBot />
+                </ThemeProvider>
+            );
+        });
+    
+        // wait for initial component load
+        await waitFor(() => {
+            expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+        });
+    
+        // simulate clue submission
+        const boxes = screen.getAllByTestId('clue-box');
+        fireEvent.click(boxes[0]);
+        fireEvent.click(screen.getByTestId('submit-button'));
+    
+        // check that the loading state resumes
+        expect(screen.getByRole('progressbar')).toBeInTheDocument();
+        expect(screen.getByTestId('submit-button')).toBeDisabled();
+    
+        // wait for loading completion
+        await waitFor(() => {
+            expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
+        });
     });
 });
