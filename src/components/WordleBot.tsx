@@ -33,14 +33,8 @@ const WordleBot: React.FC = () => {
 
   const handleBoxClick = (index: number) => {
     const newColors = [...userClueColors];
-    if (newColors[index] === 'white') {
-      newColors[index] = 'yellow';
-    } else if (newColors[index] === 'yellow') {
-      newColors[index] = 'green';
-    } else {
-      newColors[index] = 'white';
-    }
-    setUserClueColors(newColors);  
+    newColors[index] = newColors[index] === 'white' ? 'yellow' : newColors[index] === 'yellow' ? 'green' : 'white';
+    setUserClueColors(newColors);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
