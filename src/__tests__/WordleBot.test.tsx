@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import WordleBot from '../components/WordleBot';
 import { fetchWordleResult } from '../api/api';
@@ -29,5 +29,27 @@ describe('WordleBot', () => {
         letterElements.forEach(letterElement => {
             expect(letterElement.textContent).toMatch(/^[A-Z]$/);
         });
+    });
+
+    test('limits guesses to 6 and shows not solved message', async () => {
+        mockFetchWordleResult.mockResolvedValue({ guess: 'serai' });
+
+        await act(async () => {
+            render(<WordleBot />);
+        });
+
+        // 5 guesses
+        for (let i = 0; i < 5; i++) {
+            fireEvent.click(screen.getAllByTestId('letter')[0]);
+            fireEvent.click(screen.getByTestId('submit-button'));
+            await waitFor(() => screen.findByText(`Guess #${i + 2}`));
+        }
+
+        // simulate the 6th guess
+        fireEvent.click(screen.getAllByTestId('letter')[0]);
+        fireEvent.click(screen.getByTestId('submit-button'));
+
+        await waitFor(() => screen.findByText('Wordle not solved. Please refresh WordleBot to try again.'));
+        expect(screen.getByText('Wordle not solved. Please refresh WordleBot to try again.')).toBeInTheDocument();
     });
 });
