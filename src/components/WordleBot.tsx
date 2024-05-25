@@ -78,7 +78,7 @@ const WordleBot: React.FC = () => {
       <Box textAlign="center">
         <Typography variant="h4">Guess #{guesses.length + 1}</Typography>
         <Typography variant="h6">Word to Guess:</Typography>
-        <Grid container spacing={1} justifyContent="center">
+        <Grid container spacing={1} justifyContent="center" data-testid="initial-guess-container">
           {initialGuess.split('').map((letter, index) => (
             <Grid item key={index} xs={2}>
               <Box
@@ -88,8 +88,9 @@ const WordleBot: React.FC = () => {
                 height="50px"
                 border={1}
                 borderRadius="4px"
+                data-testid="letter-box"
               >
-                <Typography variant="h5">{letter.toUpperCase()}</Typography>
+                <Typography variant="h5" data-testid="letter">{letter.toUpperCase()}</Typography>
               </Box>
             </Grid>
           ))}
