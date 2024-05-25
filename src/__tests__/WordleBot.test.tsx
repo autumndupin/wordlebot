@@ -32,7 +32,7 @@ describe('WordleBot', () => {
         expect(initialGuessContainer).toBeInTheDocument();
 
         // ensure each box contains a valid letter
-        const letterElements = await screen.findAllByTestId('letter');
+        const letterElements = screen.getAllByTestId('letter');
         expect(letterElements).toHaveLength(5);
         letterElements.forEach(letterElement => {
             expect(letterElement.textContent).toMatch(/^[A-Z]$/);
@@ -74,7 +74,7 @@ describe('WordleBot', () => {
         fireEvent.click(screen.getByTestId('submit-button'));
 
         // errors out
-        await waitFor(() => screen.findByTestId('error-message'), { timeout: 5000 });
+        await waitFor(() => screen.findByTestId('error-message'));
         expect(screen.getByTestId('error-message')).toHaveTextContent('Wordle not solved. Please refresh WordleBot to try again.');
     });
 
@@ -123,7 +123,7 @@ describe('WordleBot', () => {
             );
         });
 
-        const boxes = await screen.findAllByTestId('clue-box');
+        const boxes = screen.getAllByTestId('clue-box');
 
         // expect initial white
         expect(boxes[0]).toHaveStyle('background-color: white');
@@ -152,7 +152,7 @@ describe('WordleBot', () => {
             );
         });
 
-        const boxes = await screen.findAllByTestId('clue-box');
+        const boxes = screen.getAllByTestId('clue-box');
         
         // changes each box to a green clue
         for (let i = 0; i < boxes.length; i++) {
