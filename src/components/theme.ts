@@ -87,6 +87,15 @@ const baseThemeOptions: ThemeOptions = {
       main: '#c9b458',
     },
   },
+  components: {
+    MuiGrid: {
+      styleOverrides: {
+        root: {
+          gap: '4px',
+        },
+      },
+    },
+  },
 };
 
 const theme = createTheme(baseThemeOptions);
