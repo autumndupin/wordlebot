@@ -85,7 +85,7 @@ const WordleBot: React.FC = () => {
   return (
     <Box display="flex" justifyContent="center" alignItems="top" height="100vh">
       <Box textAlign="center">
-        <Typography variant="h4">Guess #{guesses.length + 1}</Typography>
+        <Typography variant="h4" data-testid="guess-number">Guess #{guesses.length + 1}</Typography>
         <Typography variant="h6">Word to Guess:</Typography>
         <Grid container spacing={1} justifyContent="center" data-testid="initial-guess-container">
           {initialGuess.split('').map((letter, index) => (
@@ -127,6 +127,7 @@ const WordleBot: React.FC = () => {
                     'white'
                   }
                   onClick={() => handleBoxClick(index)}
+                  data-testid="clue-box"
                   sx={{ cursor: 'pointer' }}
                 >
                   <Typography variant="h5" color={color === 'white' ? 'black' : 'white'}>
@@ -141,13 +142,13 @@ const WordleBot: React.FC = () => {
             variant="contained"
             color="primary"
             disabled={loading}
-            style={{ marginTop: '16px' }}
             data-testid="submit-button"
+            style={{ marginTop: '16px' }}
           >
             Submit
           </Button>
         </form>
-        <Box marginTop={2}>
+        <Box marginTop={2} data-testid="guesses-container">
           {guesses.map((item, index) => (
             <Box key={index} marginBottom={2}>
               <Typography>Guess #{index + 1}: {item.word.toUpperCase()}</Typography>
@@ -161,6 +162,7 @@ const WordleBot: React.FC = () => {
                       height="50px"
                       border={1}
                       borderRadius="4px"
+                      data-testid="guessed-letter-box"
                       bgcolor={
                         item.clue[i] === 'g' ? theme.palette.green.main :
                         item.clue[i] === 'y' ? theme.palette.yellow.main :
@@ -177,8 +179,8 @@ const WordleBot: React.FC = () => {
             </Box>
           ))}
         </Box>
-        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-        {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
+        {error && <Alert severity="error" data-testid="error-message" sx={{ mt: 2 }}>{error}</Alert>}
+        {success && <Alert severity="success" data-testid="success-message" sx={{ mt: 2 }}>{success}</Alert>}
       </Box>
     </Box>
   );
