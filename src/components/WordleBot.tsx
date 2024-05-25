@@ -13,19 +13,22 @@ const WordleBot: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchWordleResult([])
-      .then((response: WordleResponse) => {
+    const fetchInitialGuess = async () => {
+      try {
+        const response = await fetchWordleResult([]);
         setInitialGuess(response.guess);
-        setLoading(false);
-      })
-      .catch((error: unknown) => {
+      } catch (error: unknown) {
         if (error instanceof Error) {
           setError(error.message);
         } else {
           setError("An unknown error occurred.");
         }
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchInitialGuess();
   }, []);
 
   const handleBoxClick = (index: number) => {
