@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Typography } from '@mui/material';
 
 interface GuessBoxProps {
@@ -8,7 +7,7 @@ interface GuessBoxProps {
     dataTestId: string;
 }
 
-const GuessBox: React.FC<GuessBoxProps> = ({ letter, color, onClick, dataTestId }) => {
+function GuessBox({ letter, color, onClick, dataTestId }: GuessBoxProps) {
     return (
         <Box
             sx={{
@@ -30,6 +29,6 @@ const GuessBox: React.FC<GuessBoxProps> = ({ letter, color, onClick, dataTestId 
             </Typography>
         </Box>
     );
-};
+}
 
 export default GuessBox;

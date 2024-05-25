@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import GuessBox from './GuessBox';
 import { WordleRequestItem } from '../api/api'; // Make sure the correct path is used
@@ -8,7 +7,7 @@ interface GuessesListProps {
     theme: any;
 }
 
-const GuessesList: React.FC<GuessesListProps> = ({ guesses, theme }) => {
+function GuessesList({ guesses, theme }: GuessesListProps) {
     return (
         <Box data-testid="guesses-container">
             {guesses.map((item, index) => (
@@ -33,6 +32,6 @@ const GuessesList: React.FC<GuessesListProps> = ({ guesses, theme }) => {
             ))}
         </Box>
     );
-};
+}
 
 export default GuessesList;

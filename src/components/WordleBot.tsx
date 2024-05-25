@@ -4,7 +4,7 @@ import { fetchWordleResult, WordleRequestItem } from '../api/api';
 import GuessBox from './GuessBox';
 import GuessesList from './GuessesList';
 
-const WordleBot: React.FC = () => {
+function WordleBot() {
     const theme = useTheme();
     const [initialGuess, setInitialGuess] = useState<string>('');
     const [guesses, setGuesses] = useState<WordleRequestItem[]>([]);
@@ -139,6 +139,6 @@ const WordleBot: React.FC = () => {
             </Box>
         </Box>
     );
-};
+}
 
 export default WordleBot;
