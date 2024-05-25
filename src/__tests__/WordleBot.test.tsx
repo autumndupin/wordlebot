@@ -25,14 +25,14 @@ describe('WordleBot', () => {
             );
         });
 
-         // Wait for the component to load
+        // Wait for the component to load
         expect(await screen.findByTestId('guess-number')).toHaveTextContent('Guess #1');
 
         const initialGuessContainer = screen.getByTestId('initial-guess-container');
         expect(initialGuessContainer).toBeInTheDocument();
 
         // ensure each box contains a valid letter
-        const letterElements = screen.getAllByTestId('letter');
+        const letterElements = await screen.findAllByTestId('letter');
         expect(letterElements).toHaveLength(5);
         letterElements.forEach(letterElement => {
             expect(letterElement.textContent).toMatch(/^[A-Z]$/);
