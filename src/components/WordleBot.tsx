@@ -9,6 +9,7 @@ const WordleBot: React.FC = () => {
   const [userClueColors, setUserClueColors] = useState<string[]>(['white', 'white', 'white', 'white', 'white']);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     fetchWordleResult([])
@@ -49,6 +50,12 @@ const WordleBot: React.FC = () => {
       setInitialGuess(response.guess);
       setUserClueColors(['white', 'white', 'white', 'white', 'white']);
       setError(null);
+
+      if (clueString === 'ggggg') {
+        setSuccess('Yay! All done');
+      } else {
+        setSuccess(null);
+      }
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
@@ -159,6 +166,8 @@ const WordleBot: React.FC = () => {
             </Box>
           ))}
         </Box>
+        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+        {success && <Alert severity="success" sx={{ mt: 2 }}>{success}</Alert>}
       </Box>
     </Box>
   );
