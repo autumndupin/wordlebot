@@ -8,7 +8,7 @@ describe('API Tests', () => {
         mockFetch.mockClear();
     });
 
-    // Verifies fetchWordleResult correctly handles a successful API response.
+    // checks fetch correctly handles a successful API response.
     test('fetchWordleResult returns correct response', async () => {
         const mockResponse: WordleResponse = { guess: 'serai' };
         mockFetch.mockResolvedValueOnce({
@@ -29,7 +29,7 @@ describe('API Tests', () => {
         );
     });
 
-    // Ensures fetchWordleResult properly handles and throws errors on API failure.
+    // checks fetch properly handles and throws errors on API failure.
     test('fetchWordleResult handles API errors', async () => {
         const mockErrorMessage = 'Internal Server Error';
         mockFetch.mockResolvedValueOnce({
@@ -39,7 +39,7 @@ describe('API Tests', () => {
 
         const request: WordleRequest = [{ word: 'serai', clue: 'gxyxx' }];
 
-        // suppress error logs during test execution
+        // suppress error logs during test execution with spy
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
         await expect(fetchWordleResult(request)).rejects.toThrow(mockErrorMessage);
