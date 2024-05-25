@@ -127,4 +127,29 @@ describe('WordleBot', () => {
         fireEvent.click(boxes[0]);
         expect(boxes[0]).toHaveStyle('background-color: white');
     });
+
+    test('displays success message when all clues are green', async () => {
+        mockFetchWordleResult.mockResolvedValue({ guess: 'serai' });
+
+        await act(async () => {
+            render(
+                <ThemeProvider theme={theme}>
+                    <WordleBot />
+                </ThemeProvider>
+            );
+        });
+
+        const boxes = await screen.findAllByTestId('clue-box');
+        
+        // changes each box to a green clue
+        for (let i = 0; i < boxes.length; i++) {
+            fireEvent.click(boxes[i]);
+            fireEvent.click(boxes[i]);
+        }
+
+        fireEvent.click(screen.getByTestId('submit-button'));
+
+        await waitFor(() => screen.findByTestId('success-message'));
+        expect(screen.getByTestId('success-message')).toHaveTextContent('Yay! All done');
+    });
 });
