@@ -45,8 +45,17 @@ const WordleBot: React.FC = () => {
 
     try {
       const clueString = userClueColors.map(color => color === 'green' ? 'g' : color === 'yellow' ? 'y' : 'x').join('');
-      const response = await fetchWordleResult([...guesses, { word: initialGuess, clue: clueString }]);
-      setGuesses([...guesses, { word: initialGuess, clue: clueString }]);
+      const newGuess = { word: initialGuess, clue: clueString };
+      const newGuesses = [...guesses, newGuess];
+
+      if (newGuesses.length >= 6) {
+        setError('Wordle not solved. Please refresh WordleBot to try again.');
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetchWordleResult(newGuesses);
+      setGuesses(newGuesses);
       setInitialGuess(response.guess);
       setUserClueColors(['white', 'white', 'white', 'white', 'white']);
       setError(null);
@@ -133,6 +142,7 @@ const WordleBot: React.FC = () => {
             color="primary"
             disabled={loading}
             style={{ marginTop: '16px' }}
+            data-testid="submit-button"
           >
             Submit
           </Button>
