@@ -8,6 +8,7 @@ const WordleBot: React.FC = () => {
   const [guesses, setGuesses] = useState<WordleRequestItem[]>([]);
   const [userClueColors, setUserClueColors] = useState<string[]>(['white', 'white', 'white', 'white', 'white']);
   const [loading, setLoading] = useState<boolean>(true);
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
 
@@ -36,24 +37,24 @@ const WordleBot: React.FC = () => {
     } else {
       newColors[index] = 'white';
     }
-    setUserClueColors(newColors);
+    setUserClueColors(newColors);  
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true);
+    setSubmitting(true);
+
+    const clueString = userClueColors.map(color => color === 'green' ? 'g' : color === 'yellow' ? 'y' : 'x').join('');
+    const newGuess = { word: initialGuess, clue: clueString };
+    const newGuesses = [...guesses, newGuess];
+
+    if (newGuesses.length === 5 && clueString !== 'ggggg') {
+      setError('Wordle not solved. Please refresh WordleBot to try again.');
+      setSubmitting(false);
+      return;
+    }
 
     try {
-      const clueString = userClueColors.map(color => color === 'green' ? 'g' : color === 'yellow' ? 'y' : 'x').join('');
-      const newGuess = { word: initialGuess, clue: clueString };
-      const newGuesses = [...guesses, newGuess];
-
-      if (newGuesses.length >= 6) {
-        setError('Wordle not solved. Please refresh WordleBot to try again.');
-        setLoading(false);
-        return;
-      }
-
       const response = await fetchWordleResult(newGuesses);
       setGuesses(newGuesses);
       setInitialGuess(response.guess);
@@ -72,7 +73,7 @@ const WordleBot: React.FC = () => {
         setError("An unknown error occurred.");
       }
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
@@ -127,8 +128,8 @@ const WordleBot: React.FC = () => {
                     'white'
                   }
                   onClick={() => handleBoxClick(index)}
-                  data-testid="clue-box"
                   sx={{ cursor: 'pointer' }}
+                  data-testid="clue-box"
                 >
                   <Typography variant="h5" color={color === 'white' ? 'black' : 'white'}>
                     {initialGuess[index]?.toUpperCase()}
@@ -141,11 +142,12 @@ const WordleBot: React.FC = () => {
             type="submit"
             variant="contained"
             color="primary"
-            disabled={loading}
-            data-testid="submit-button"
+            disabled={loading || submitting}
             style={{ marginTop: '16px' }}
+            data-testid="submit-button"
           >
-            Submit
+            {!submitting && <Typography variant="body2" color="white">Submit</Typography>}
+            {submitting && <CircularProgress size={18} />}
           </Button>
         </form>
         <Box marginTop={2} data-testid="guesses-container">
@@ -179,8 +181,8 @@ const WordleBot: React.FC = () => {
             </Box>
           ))}
         </Box>
-        {error && <Alert severity="error" data-testid="error-message" sx={{ mt: 2 }}>{error}</Alert>}
-        {success && <Alert severity="success" data-testid="success-message" sx={{ mt: 2 }}>{success}</Alert>}
+        {error && <Alert severity="error" sx={{ mt: 2 }} data-testid="error-message">{error}</Alert>}
+        {success && <Alert severity="success" sx={{ mt: 2 }} data-testid="success-message">{success}</Alert>}
       </Box>
     </Box>
   );
