@@ -1,9 +1,9 @@
 import { CssBaseline, StyledEngineProvider } from "@mui/material";
 import { ThemeProvider, createTheme, responsiveFontSizes } from "@mui/material/styles";
 import { ReactNode } from "react";
-import { baseThemeOptions } from "./theme";
+import theme from "./theme";
 
-const baseTheme = createTheme(baseThemeOptions);
+const baseTheme = createTheme(theme);
 const responsiveTheme = responsiveFontSizes(baseTheme);
 
 interface Props {
