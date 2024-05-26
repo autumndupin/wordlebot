@@ -125,7 +125,7 @@ function WordleBot() {
                         type="submit"
                         variant="contained"
                         color="primary"
-                        disabled={loading || submitting}
+                        disabled={loading || submitting || success !== null}
                         style={{ marginTop: '16px' }}
                         data-testid="submit-button"
                     >
